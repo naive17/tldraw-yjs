@@ -1,4 +1,4 @@
-import { Tldraw, track, useEditor } from 'tldraw'
+import { Tldraw, useEditor } from 'tldraw'
 import 'tldraw/tldraw.css'
 import { useYjsStore } from './useYjsStore'
 
@@ -7,18 +7,23 @@ const HOST_URL =
 		? 'ws://localhost:1234'
 		: 'wss://demos.yjs.dev'
 
+
+const roomId = new URLSearchParams(window.location.search).get('whiteboardid') || 'example17'
+
 export default function YjsExample() {
 	const store = useYjsStore({
-		roomId: 'example17',
+		roomId:roomId,
 		hostUrl: HOST_URL,
 	})
-
 	return (
 		<div className="tldraw__editor">
 			<Tldraw
 				autoFocus
 				store={store}
 				components={{
+					DebugMenu : EmptyComponent,
+					PageMenu : EmptyComponent,
+					MainMenu : EmptyComponent,
 					SharePanel: NameEditor,
 				}}
 			/>
@@ -26,30 +31,21 @@ export default function YjsExample() {
 	)
 }
 
-const NameEditor = track(() => {
-	const editor = useEditor()
-
-	const { color, name } = editor.user.getUserPreferences()
-
+const EmptyComponent = () => {
 	return (
 		<div style={{ pointerEvents: 'all', display: 'flex' }}>
-			<input
-				type="color"
-				value={color}
-				onChange={(e) => {
-					editor.user.updateUserPreferences({
-						color: e.currentTarget.value,
-					})
-				}}
-			/>
-			<input
-				value={name}
-				onChange={(e) => {
-					editor.user.updateUserPreferences({
-						name: e.currentTarget.value,
-					})
-				}}
-			/>
 		</div>
 	)
-})
+}
+
+const NameEditor = () => {
+	const username = new URLSearchParams(window.location.search).get('username') || 'Anonymous'
+	const editor = useEditor();
+	editor.user.updateUserPreferences({
+		name: username,
+	})
+	return (
+		<div style={{ pointerEvents: 'all', display: 'flex' }}>
+		</div>
+	)
+}
