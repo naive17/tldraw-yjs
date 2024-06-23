@@ -19,6 +19,10 @@ export default function YjsExample() {
 		<div className="tldraw__editor">
 			<Tldraw
 				autoFocus
+				// only allow jpegs
+				acceptedImageMimeTypes={[]}
+				// don't allow any videos
+				acceptedVideoMimeTypes={[]}
 				store={store}
 				components={{
 					DebugMenu : EmptyComponent,
@@ -44,6 +48,7 @@ const NameEditor = () => {
 	editor.user.updateUserPreferences({
 		name: username,
 	})
+	editor.setCurrentTool('draw')
 	return (
 		<div style={{ pointerEvents: 'all', display: 'flex' }}>
 		</div>
